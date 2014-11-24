@@ -37,9 +37,11 @@
         }
     }
     // Authentication failed. Destroy all humans.
+    session_start();
     $_SESSION = array();
     setcookie(session_name(), '', time()-3600, session_id());
     @session_destroy();
     // Return to login.php and displays auth failed message
-    header( "Location: login.php?message=Authorization failed. Please try again." );
+    header( "Location: login.php?message=Authorization failed. Please try again!" );
+    exit();
 ?>
