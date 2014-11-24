@@ -436,7 +436,7 @@ No <input name="notify" type="radio" value="No"<?php echo $nvalue['No']; ?> />
 </tr>
 <?php
   while( $row = mysql_fetch_array($dou) ) {
-  	$deleteuser_link = "<a href=\"$_SERVER[PHP_SELF]?task=delete_user&uid=$row[uid]\">Delete</a>";
+  	$deleteuser_link = "<a onclick=\"return confirm('Are you sure that you want to permanently delete this user from the databse?');\" href=\"$_SERVER[PHP_SELF]?task=delete_user&uid=$row[uid]\">Delete</a>";
  	$viewuser_link = "<a title=\"View Student Profile\" href=\"student_profile.php?uid=$row[uid]\">$row[first_name] $row[last_name]</a>";
  	$updateuser_link = "<a title=\"Update\" href=\"$_SERVER[PHP_SELF]?task=get_user_for_update&uid=$row[uid]\">Edit</a>";
     echo ( "<tr><td>$viewuser_link</td><td>$row[username]</td><td>$row[email_address]</td><td>$row[notify]</td><td>$row[user_type]</td><td>$row[status]</td><td>$updateuser_link</td><td>$deleteuser_link</td></tr>\n" );
