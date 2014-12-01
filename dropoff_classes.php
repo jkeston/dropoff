@@ -274,15 +274,15 @@
 		}
 
 		public static function activateDOUser($e) {
-			global $message;
+			global $message,$local_path;
 			$query = "SELECT * FROM dropoff_validation WHERE validation_code = '$e' AND status = 'pending' ";
 			$result = mysql_query($query);
 			$row = mysql_fetch_array($result);
 			if ( is_numeric($row['user_id']) ) {
 				$query = "UPDATE dropoff_users SET status='active' WHERE uid=".$row['user_id'];
 				if ( mysql_query($query) ) {
-					$message = "Your account has been activated. Please log below.";
-					header("Location: ".$_SERVER['HTTP_ORIGIN'].'/aim/im4470dropoff/login.php?message='.$message);
+					$message = "Your account has been activated. Please login below.";
+					header("Location: ".$_SERVER['HTTP_ORIGIN'].$local_path.'login.php?message='.$message);
 
 				}
 			}
@@ -290,25 +290,25 @@
 
 		public function sendValidationCode() {
 			global $message;
-	    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	    $randomString = '';
-	    for ($i = 0; $i < 32; $i++) {
-	        $randomString .= $characters[rand(0, strlen($characters) - 1)];
-	    }
-	    // TO DO: Make sure random code is not already there.
-	    $query = "INSERT INTO dropoff_validation (user_id,validation_code,status) ";
-	    $query .= "VALUES (".$this->uid.",'$randomString','pending')";
-	    // echo $query; exit;
-	    if ( mysql_query($query) ) {
-	    	$email = "Please click the link below to activate you account:\n";
-	    	$email .= $_SERVER["HTTP_REFERER"].'?reg_code='.$randomString;
-	    	mail($this->email_address, 'DropOff Activation Link', $email, "From: keston@unearthedmusic.com\r\nReturn-Path: keston@unearthedmusic.com\r\n" ); 
-	    	$message .= ' Please click the validation link in your email.';
-	    }
-	    else {
-	    	$message .= ' Failed to create registration code.';
-	    }
-	  }
+		   $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		   $randomString = '';
+		   for ($i = 0; $i < 32; $i++) {
+		      $randomString .= $characters[rand(0, strlen($characters) - 1)];
+		   }
+		   // TO DO: Make sure random code is not already there.
+		   $query = "INSERT INTO dropoff_validation (user_id,validation_code,status) ";
+		   $query .= "VALUES (".$this->uid.",'$randomString','pending')";
+		   // echo $query; exit;
+		   if ( mysql_query($query) ) {
+		   	$email = "Please click the link below to activate you account:\n";
+		   	$email .= $_SERVER["HTTP_REFERER"].'?reg_code='.$randomString;
+		   	mail($this->email_address, 'DropOff Activation Link', $email, "From: keston@unearthedmusic.com\r\nReturn-Path: keston@unearthedmusic.com\r\n" ); 
+		   	$message .= ' Please click the validation link in your email.';
+		   }
+		   else {
+		   	$message .= ' Failed to create registration code.';
+		   }
+		}
   }
 
   class DOProject {
