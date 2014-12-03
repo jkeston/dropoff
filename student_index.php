@@ -5,6 +5,9 @@
 	include('dropoff_control.php');
 	include('display_courses.php');	
 	include('display_submissions.php');
+	if ( $task != 'update_dropoff_user' || $user_updated == true ) {
+		$u = DOUser::getDOUser($user_id);
+	}
 ?>
 <html>
 <head>
@@ -60,6 +63,10 @@
 </head>
 <body>
 	<h1>DropOff Student Dashboard</h1>
+<?php
+	$logout_link = $_SESSION['PHP_SELF']."?task=logout";
+?>
+<a href="<?php echo $logout_link; ?>">Logout</a><br />
 <p>
 <?php
 	echo "<span style=\"color:red\">$message</span>";
@@ -191,5 +198,94 @@
 </tr>
 <?php echo $course_tr; ?>
 </table>
+
+
+<h3>Update Your Profile</h3>
+<form name="insert_dropoff_user" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+<input type="hidden" name="task" value="update_dropoff_user" />
+<input type="hidden" name="uid" value="<?php echo $user_id; ?>" />
+<input type="hidden" name="username" value="<?php echo $u->username; ?>" />
+<input type="hidden" name="status" value="<?php echo $u->status; ?>" />
+<table bgcolor="#aaaaaa" cellspacing="1" cellpadding="3">
+<tr bgcolor="#ffffff">
+<td>Username:</td>
+<td><?php echo $u->username; ?></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td>Password:</td>
+<td>
+<input name="password" type="password" value="" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">First Name:</td>
+<td>
+<input name="first_name" type="text" value="<?php echo $u->first_name; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Last Name:</td>
+<td>
+<input name="last_name" type="text" value="<?php echo $u->last_name; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Email Address:</td>
+<td>
+<input name="email_address" type="text" value="<?php echo $u->email_address; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Address:</td>
+<td>
+<input name="address" type="text" value="<?php echo $u->address; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">City:</td>
+<td>
+<input name="city" type="text" value="<?php echo $u->city; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">State:</td>
+<td>
+<input name="state" type="text" value="<?php echo $u->state; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Postal:</td>
+<td>
+<input name="postal_code" type="text" value="<?php echo $u->postal_code; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Country:</td>
+<td>
+<input name="country" type="text" value="<?php echo $u->country; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Notify:</td>
+<td>
+<?php
+	$nvalue[$u->notify] = ' checked="true"';
+?>
+Yes <input name="notify" type="radio" value="Yes"<?php echo $nvalue['Yes']; ?> />
+No <input name="notify" type="radio" value="No"<?php echo $nvalue['No']; ?> />
+</td>
+</tr>
+<tr bgcolor="#ffffff">
+<td>Date of Birth:</td>
+<td>
+<input name="dob" type="text" value="<?php echo $u->dob; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td>User Type:</td>
+<td>
+<?php
+  echo $u->user_type;
+?>
+</td>
+</tr>
+<tr bgcolor="#ffffff">
+<td colspan="2">
+<input name="submit" value="Submit" type="submit" /></td>
+</tr>
+</table>
+</form><!-- close dropoff_users form-->
+
+
 </body>
 </html>
