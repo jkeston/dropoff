@@ -251,6 +251,24 @@
 			return $valid;
 		}
 
+		public function validateDOUser() {
+			global $message;
+			$valid = true;
+			if ( empty($this->username) ) {
+				$valid = false;
+				$message .= "You must enter a unique username.<br />\n";
+			}
+			if ( empty($this->password) ) {
+				$valid = false;
+				$message .= "You must enter a password.<br />\n";
+			}
+			if ( empty($this->email_address) ) {
+				$valid = false;
+				$message .= "You must enter an email address.<br />\n";
+			}
+			return $valid;
+		}
+		
 		public static function getDOUsers($e = '') {
 			$query = "SELECT * FROM dropoff_users ";
 			if ( is_array($e) ) {
