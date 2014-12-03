@@ -1,5 +1,6 @@
 <?php
 	$show = true;
+	$user_updated = false;
 	$message = '';
 	if ( !empty($_POST['task']) ) {
 		$task = $_POST['task'];
@@ -43,25 +44,29 @@
 		case 'update_dropoff_course':
 			$c = new DOCourse($_POST['cid'],$user_id,$_POST['course_title'],1,$_POST['session_title'],$_POST['description'],$_POST['syllabus_url'],$_POST['prerequisites'],$_POST['start_date'],$_POST['end_date'],$_POST['status']);
 			// Server side validation here
-			if ( $c->updateDOCourse($_POST['cid']) ) {
-				$message = "Course $c->course_title updated with cid: $c->cid.";
+			if ( $c->validateDOCourse() ) {
+				if ( $c->updateDOCourse($_POST['cid']) ) {
+					$message = "Course $c->course_title updated with cid: $c->cid.";
+				}
+				else {
+					$message = "Course not updated. Update failed.";
+				}
+				unset($c);
 			}
-			else {
-				$message = "Course not updated. Update failed.";
-			}
-			unset($c);
 			break;
 		// DOUser tasks
 		case 'insert_dropoff_user':
 			$u = new DOUser(0, $_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['last_name'], $_POST['email_address'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['postal_code'], $_POST['country'], $_POST['notify'], $_POST['dob'], $_POST['user_type'],$_POST['status']);
-			//
-			if ( $u->insertDOUser() ) {
-				$message = "User $u->first_name $u->last_name created with uid: $u->uid.";
+			// validate this business
+			if ( $u->validateDOUser() ) {
+				if ( $u->insertDOUser() ) {
+					$message = "User $u->first_name $u->last_name created with uid: $u->uid.";
+				}
+				else {
+					$message = "User not created. Insert failed.";
+				}
+				unset($u);
 			}
-			else {
-				$message = "User not created. Insert failed.";
-			}
-			unset($u);
 			break;
 		case 'delete_user':
 			$b = DOUser::deleteDOUser($_GET['uid']);
@@ -77,13 +82,16 @@
 			break;
 		case 'update_dropoff_user':
 			$u = new DOUser($_POST['uid'],$_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['last_name'], $_POST['email_address'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['postal_code'], $_POST['country'], $_POST['notify'], $_POST['dob'], $_POST['user_type'],$_POST['status']);
-			if ( $u->updateDOUser($_POST['uid']) ) {
-				$message = "User $u->username updated with uid: $u->uid.";
+			if ( $u->validateDOUser() ) {
+				if ( $u->updateDOUser($_POST['uid']) ) {
+					$user_updated = true;
+					$message = "User $u->username updated with uid: $u->uid.";
+				}
+				else {
+					$message = "User not updated. Update failed.";
+				}
+				unset($u);
 			}
-			else {
-				$message = "User not updated. Update failed.";
-			}
-			unset($u);
 			break;
 		case 'logout':
 			$_SESSION = array();
