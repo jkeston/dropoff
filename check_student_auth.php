@@ -21,6 +21,7 @@
 		}
 		// set a variable to store the user id
 		$user_id = $row['uid'];
+		$_POST['user_type'] = $row['user_type'];
   }
 	else {
 		$_SESSION = array();
