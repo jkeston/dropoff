@@ -268,7 +268,7 @@
 			}
 			return $valid;
 		}
-		
+
 		public static function getDOUsers($e = '') {
 			$query = "SELECT * FROM dropoff_users ";
 			if ( is_array($e) ) {
@@ -668,5 +668,112 @@
 			return $result;
 		}
 	}
+  class DOLesson {
+   		// DOCourses properties
+		public $lid;
+		public $user_id;		
+		public $course_id;		
+		public $lesson_title;
+		public $sequence;
+		public $content;
+		public $status;
+ 		
+ 		// define the constructor for the class
+		public function __construct( $lid, $user_id, $course_id, $lesson_title, $sequence, $content, $status ) {
+			$this->lid = $lid;
+			$this->user_id = $user_id;				
+			$this->course_id = $course_id;			
+			$this->lesson_title = $lesson_title;		
+			$this->sequence = $sequence;		
+			$this->content = $content;					
+			$this->status = $status;  		
+		}
 
+		public static function getDOLessons($e) {
+			// global $course_status;
+			$query = "SELECT * FROM dropoff_lessons";
+			$query = "SELECT l.*,u.first_name,u.last_name,c.course_title FROM dropoff_lessons l, dropoff_users u,dropoff_courses c WHERE u.uid = l.user_id AND c.cid = l.course_id ";
+			if ( is_numeric($e) && $e > 0 ) {
+				$query .= " AND l.user_id = $e";
+			}
+			else if ( in_array($e, $course_status) ) {
+				$query .= " AND l.status = '$e'";				
+			}
+			$result = mysql_query($query);
+			//echo $query; exit;
+			return $result;
+		}
+
+		
+		public static function getDOLesson($e) {
+			$query = "SELECT * FROM dropoff_lessons WHERE lid = $e";
+
+			$result = mysql_query($query);
+			if ( $row = mysql_fetch_array($result) ) {
+				return new DOCourse($row['lid'],$row['user_id'],$row['course_id'],$row['lesson_title'],$row['sequence'],$row['content'],$row['status']);
+			}
+			else {
+				return false;
+			}
+		}
+
+		public static function deleteDOLesson($e) {
+			if ( is_numeric($e) && $e > 0 ) {
+				$query = "DELETE FROM dropoff_lessons WHERE lid = $e";
+				return mysql_query($query);	
+			}
+			else {
+				return false;
+			}			
+		}
+
+		public function insertDOLesson() {
+			$query = "INSERT INTO dropoff_lessons ( 
+				course_id,
+				user_id,
+				lesson_title, 
+				sequence, 
+				content, 
+				status ) 
+			VALUES ( 
+				$this->course_id, 
+				$this->user_id,
+				'$this->lesson_title', 
+				$this->sequence, 
+				'$this->content', 
+				'$this->status' )";
+
+			// echo $query; exit;
+			$valid = mysql_query( $query );
+			$this->lid = mysql_insert_id();
+			return $valid;
+		}
+
+		public function updateDOLesson($e) {
+			$query = "UPDATE dropoff_lessons SET 
+				course_id = $this->course_id, 
+				lesson_title = '$this->lesson_title', 
+				sequence = $this->sequence, 
+				content = '$this->content', 
+				status = '$this->status' WHERE lid = $this->lid";
+
+			//echo $query;exit;
+			$valid = mysql_query( $query );
+			return $valid;
+		}
+
+		public function validateDOLesson() {
+			global $message;
+			$valid = true;
+			if ( empty($this->lesson_title) ) {
+				$valid = false;
+				$message .= "You must enter a Lesson Title.<br />\n";
+			}
+			if ( empty($this->content) ) {
+				$valid = false;
+				$message .= "You must enter some content.<br />\n";
+			}
+			return $valid;
+		}  
+  }
 ?>
