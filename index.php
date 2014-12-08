@@ -7,6 +7,7 @@
 <html>
 <head>
 	<title>Drop Off Project Submission System</title>
+	<script type="text/javascript" src="tinymce/tinymce.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="dropoff.css" />
 	<script type="text/javascript">
 	<!--
@@ -17,6 +18,17 @@
 	  }
 	}
 	-->
+	</script>
+	<script type="text/javascript">
+	tinymce.init({
+	    selector: "textarea",
+	    plugins: [
+	        "advlist autolink lists link image charmap print preview anchor",
+	        "searchreplace visualblocks code fullscreen",
+	        "insertdatetime media table contextmenu paste"
+	    ],
+	    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+	});
 	</script>
 </head>
 <body>
@@ -218,6 +230,75 @@
 </div><!-- close #leftcol -->
 
 <div id="rightcol">
+<!-- Begin: Lesson Form -->
+<?php 
+	if ( $task == 'get_lesson_for_update' ) {
+		echo "<h3>Update Lesson</h3>";
+	}
+	else {
+		echo "<h3>Insert Lesson</h3>";
+	}
+?>
+<form name="insert_dropoff_lesson" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+<?php
+	if ( $task == 'get_lesson_for_update' ) {
+		echo '<input type="hidden" name="task" value="update_dropoff_lesson" />'."\n";
+		echo '<input type="hidden" name="cid" value="'.$l->cid.'" />';		
+	}
+	else {
+		echo '<input type="hidden" name="task" value="insert_dropoff_lesson" />';
+	}
+	echo '<input type="hidden" name="user_id" value="'.$user_id.'" />';		
+?>
+<table bgcolor="#aaaaaa" cellspacing="1" cellpadding="3">
+<tr bgcolor="#ffffff">
+<td>Lesson Title:</td>
+<td>
+<input name="lesson_title" type="text" value="<?php echo $l->lesson_title; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td>Lesson Course:</td>
+<td>
+	<select name="course_id">
+<?php
+	while( $row = mysql_fetch_array($doc) ) {	
+		echo('<option value="'.$row['cid'].'">'.$row['course_title'].'</option>');
+	}
+	mysql_data_seek($doc,0);
+?>
+	</select>
+</td>
+</tr>
+<tr bgcolor="#ffffff">
+<td colspan="2">Lesson Content:<br />
+      <textarea name="content" cols="40"><?php echo $l->content; ?></textarea>
+    </td>
+</tr>
+<tr bgcolor="#ffffff">
+<td height="27">Sequence:</td>
+<td>
+<input name="sequence" type="text" value="<?php echo $l->sequence; ?>" /></td>
+</tr>
+<tr bgcolor="#ffffff">
+<td>Status:</td>
+<td>
+<?php
+	$lselected[$l->status] = ' selected="true"';
+?>
+<select name="status">
+<option value="active"<?php echo $lselected[active]; ?>>Active</option>
+<option value="pending"<?php echo $lselected[pending]; ?>>Pending</option>
+<option value="archived"<?php echo $lselected[archived]; ?>>Archived</option>
+</select>
+</td>
+</tr>
+<tr bgcolor="#ffffff">
+<td colspan="2">
+<input name="submit" value="Submit" type="submit" /></td>
+</tr>
+</table>
+</form>
+<!-- End: Lesson Form -->
 <?php 
 	if ( $task == 'get_user_for_update' ) {
 		echo "<h3>Update User</h3>";
@@ -462,6 +543,28 @@ No <input name="notify" type="radio" value="No"<?php echo $nvalue['No']; ?> />
   	$deleteproject_link = "<a href=\"$_SERVER[PHP_SELF]?task=delete_project&pid=$row[pid]\">Delete</a>";
  	$updateproject_link = "<a title=\"Update\" href=\"$_SERVER[PHP_SELF]?task=get_project_for_update&pid=$row[pid]\">$row[project_title]</a>";
     echo ( "<tr><td>$updateproject_link</td><td>$row[description]</td><td>$row[course_title]</td><td>$row[first_name] $row[last_name]</td><td>$row[due_date]</td><td>$row[submit_start]</td><td>$row[submit_end]</td><td>$row[points]</td><td>$row[status]</td><td>$deleteproject_link</td></tr>\n" );
+  }
+?>
+</table>
+
+<p>&nbsp;</p>
+<!-- Display dropoff_projects for update and delete -->
+<?php
+	$active_link = "$_SERVER[PHP_SELF]?task=get_lessons&p=active";
+	$pending_link = "$_SERVER[PHP_SELF]?task=get_lessons&p=pending";
+	$archived_link = "$_SERVER[PHP_SELF]?task=get_lessons&p=archived";
+	$mylessons_link = "$_SERVER[PHP_SELF]?task=get_lessons&p=".$user_id;
+?>
+<a href="<?php echo $mylessons_link; ?>">Show My Lessons</a> | <a href="<?php echo $_SERVER[PHP_SELF]; ?>">Show All Lessons</a> | <a href="<?php echo $active_link; ?>">Show Active Lessons</a> | <a href="<?php echo $pending_link; ?>">Show Pending Lessons</a> | <a href="<?php echo $archived_link; ?>">Show Archived Lessons</a> 
+<table>
+<tr>
+<th>Lesson Title</th><th>Lesson Content</th><th>Sequence</th><th>Course</th><th>Author</th><th>Status</th><th>Delete Lesson</th>
+</tr>
+<?php
+  while( $row = mysql_fetch_array($dol) ) {
+  	$deletelesson_link = "<a href=\"$_SERVER[PHP_SELF]?task=delete_lesson&pid=$row[pid]\">Delete</a>";
+ 	$updatelesson_link = "<a title=\"Update\" href=\"$_SERVER[PHP_SELF]?task=get_lesson_for_update&pid=$row[lid]\">$row[lesson_title]</a>";
+    echo ( "<tr><td>$updatelesson_link</td><td>$row[content]</td><td>$row[sequence]</td><td>$row[course_title]</td><td>$row[first_name] $row[last_name]</td><td>$row[status]</td><td>$deletelesson_link</td></tr>\n" );
   }
 ?>
 </table>
