@@ -54,6 +54,20 @@
 				unset($c);
 			}
 			break;
+		// Lesson tasks
+		case 'insert_dropoff_lesson':
+			$l = new DOLesson(0,$_POST['user_id'],$_POST['course_id'],$_POST['lesson_title'],$_POST['sequence'],$_POST['content'],$_POST['status']);
+			// Server side validation goes here
+			if ( $l->validateDOLesson() ) {
+				if ( $l->insertDOLesson() ) {
+					$message = "Lesson $l->lesson_title created with lid: $l->lid.";
+				}
+				else {
+					$message = "Lesson not created. Insert failed.";
+				}
+				unset($l);
+			}
+			break;
 		// DOUser tasks
 		case 'insert_dropoff_user':
 			$u = new DOUser(0, $_POST['username'], $_POST['password'], $_POST['first_name'], $_POST['last_name'], $_POST['email_address'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['postal_code'], $_POST['country'], $_POST['notify'], $_POST['dob'], $_POST['user_type'],$_POST['status']);
@@ -196,6 +210,7 @@
 		$doc = DOCourse::getDOCourses();
 		$dou = DOUser::getDOUsers();
 		$dop = DOProject::getDOProjects();
+		$dol = DOLesson::getDOLessons();
 	}
 	if ( !empty($_SESSION['message']) ) {
 		$message = $_SESSION['message'];
