@@ -7,10 +7,17 @@
 <html>
 <head>
 	<title>Drop Off Project Submission System</title>
+	<script type="text/javascript" src="jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="tinymce/tinymce.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="dropoff.css" />
 	<script type="text/javascript">
 	<!--
+	function show_lesson(e) {
+		// alert('show_lesson');
+		var lid = '#lid'+e;
+		$(lid).toggle(500);
+		console.log(lid);
+	}
 	function checkApply(sel,rid) {
 	  if (sel.options[sel.selectedIndex].value) {
 	    // alert(rid);
@@ -564,7 +571,7 @@ No <input name="notify" type="radio" value="No"<?php echo $nvalue['No']; ?> />
   while( $row = mysql_fetch_array($dol) ) {
   	$deletelesson_link = "<a href=\"$_SERVER[PHP_SELF]?task=delete_lesson&pid=$row[pid]\">Delete</a>";
  	$updatelesson_link = "<a title=\"Update\" href=\"$_SERVER[PHP_SELF]?task=get_lesson_for_update&pid=$row[lid]\">$row[lesson_title]</a>";
-    echo ( "<tr><td>$updatelesson_link</td><td>$row[content]</td><td>$row[sequence]</td><td>$row[course_title]</td><td>$row[first_name] $row[last_name]</td><td>$row[status]</td><td>$deletelesson_link</td></tr>\n" );
+    echo ( "<tr><td>$updatelesson_link</td><td><a onclick=\"javascript:show_lesson($row[lid])\">Toggle Lesson Content</a><div id=\"lid$row[lid]\" style=\"display:none;\">$row[content]</div></td><td>$row[sequence]</td><td>$row[course_title]</td><td>$row[first_name] $row[last_name]</td><td>$row[status]</td><td>$deletelesson_link</td></tr>\n" );
   }
 ?>
 </table>
