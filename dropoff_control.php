@@ -207,10 +207,11 @@
 			break;
 	}
 	if ( $show ) {
-		$doc = DOCourse::getDOCourses();
-		$dou = DOUser::getDOUsers();
-		$dop = DOProject::getDOProjects();
-		$dol = DOLesson::getDOLessons();
+		$doc  = DOCourse::getDOCourses();
+		$doac = DOCourse::getDOCourses('current');
+		$dou  = DOUser::getDOUsers();
+		$dop  = DOProject::getDOProjects();
+		$dol  = DOLesson::getDOLessons();
 	}
 	if ( !empty($_SESSION['message']) ) {
 		$message = $_SESSION['message'];
