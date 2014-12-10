@@ -38,6 +38,10 @@
 			else if ( in_array($e, $course_status) ) {
 				$query .= " AND c.status = '$e'";				
 			}
+			else if ( $e == 'current' ) {
+				$query .= " AND c.end_date > NOW() ";
+				//echo $query; exit;
+			}
 			$result = mysql_query($query);
 			return $result;
 		}
