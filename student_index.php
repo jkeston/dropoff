@@ -92,7 +92,7 @@
 <td>
 	<select name="course_id">
 <?php
-	while( $row = mysql_fetch_array($doc) ) {	
+	while( $row = mysql_fetch_array($doac) ) {	
 		echo('<option value="'.$row['cid'].'">'.$row['course_title'].'</option>');
 	}
 	mysql_data_seek($doc,0);
